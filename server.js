@@ -4,6 +4,7 @@ const multer = require("multer");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const bodyParser = require("body-parser");
 const { GoogleGenAI } = require("@google/genai");
 
 const app = express();
@@ -13,7 +14,8 @@ const PORT = process.env.PORT || 5000;
 // ⚙️ CONFIGURATION
 // ===============================
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 app.use("/outputs", express.static("outputs"));
@@ -21,6 +23,14 @@ app.use("/outputs", express.static("outputs"));
 ["uploads", "outputs"].forEach((dir) => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
+
+// Routes
+const indexRoute = require("./routes/dashboard");
+app.use("/index", indexRoute);
+
+const dashboardRoute = require("./routes/dashboard");
+app.use("/", dashboardRoute);
+
 
 // Multer for file uploads
 const upload = multer({
@@ -86,12 +96,12 @@ async function generateImageWithGoogleAI(promptText, imagePath = null) {
     console.log("🔄 Sending request to Google AI...");
 
     let contents;
-    
+
     if (imagePath) {
       // Read and encode the image file
       const imageBuffer = fs.readFileSync(imagePath);
       const base64Image = imageBuffer.toString("base64");
-      
+
       contents = [
         {
           parts: [

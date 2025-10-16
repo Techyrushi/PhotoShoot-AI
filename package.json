@@ -11,10 +11,12 @@
     "@google/genai": "^1.25.0",
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.5.0",
+    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "form-data": "^4.0.0",
+    "groq-sdk": "^0.33.0",
     "multer": "^2.0.2",
     "openai": "^6.3.0",
     "sharp": "^0.34.4"

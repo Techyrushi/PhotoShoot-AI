@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/logos.png" type="image/png">
     <title>Dashboard - PhotoShoot AI Studio - Transform Your Products</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -40,9 +42,20 @@
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5));
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover .logo-img {
+            transform: scale(1.05);
         }
 
         .back-btn {
@@ -302,8 +315,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .loading-text {
@@ -440,12 +458,16 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <div class="logo">PhotoShoot AI Studio</div>
-            <a href="index.html" class="back-btn">
+            <div class="logo">
+                <img src="images/logos.png" alt="PhotoShoot AI Studio Logo" class="logo-img">
+                <span class="logo-text">PhotoShoot AI Studio</span>
+            </div>
+            <a href="/index" class="back-btn">
                 <i class="fas fa-arrow-left"></i>
                 Back to Home
             </a>
@@ -596,7 +618,7 @@
                         fileInput.click();
                     }
                 });
-                
+
                 // FIXED: Use 'input' event instead of 'change' for better compatibility
                 fileInput.addEventListener('input', (e) => this.handleFileSelect(e));
 
@@ -648,28 +670,28 @@
             selectScene(option) {
                 // Remove previous selection
                 document.querySelectorAll('.scene-option').forEach(opt => opt.classList.remove('selected'));
-                
+
                 // Add selection to clicked option
                 option.classList.add('selected');
                 this.selectedScene = option.dataset.scene;
-                
+
                 this.updateGenerateButton();
             }
 
             selectGender(option) {
                 // Remove previous selection
                 document.querySelectorAll('.gender-option').forEach(opt => opt.classList.remove('selected'));
-                
+
                 // Add selection to clicked option
                 option.classList.add('selected');
                 this.selectedGender = option.dataset.gender;
-                
+
                 this.updateGenerateButton();
             }
 
             handleFileSelect(event) {
                 const file = event.target.files?.[0];
-                
+
                 if (file) {
                     this.processFile(file);
                 }
@@ -677,7 +699,7 @@
 
             handleFileDrop(event) {
                 const file = event.dataTransfer?.files?.[0];
-                
+
                 if (file) {
                     // Reset file input to allow selecting the same file again
                     document.getElementById('fileInput').value = '';
@@ -706,7 +728,7 @@
                 reader.onload = (e) => {
                     const preview = document.getElementById('previewImage');
                     const container = document.getElementById('previewContainer');
-                    
+
                     preview.src = e.target.result;
                     container.style.display = 'block';
                 };
@@ -723,7 +745,7 @@
                 const errorEl = document.getElementById('errorMessage');
                 errorEl.textContent = message;
                 errorEl.style.display = 'block';
-                
+
                 setTimeout(() => {
                     errorEl.style.display = 'none';
                 }, 5000);
@@ -795,7 +817,7 @@
                 setTimeout(() => {
                     document.getElementById('loadingSection').style.display = 'none';
                     document.getElementById('resultsSection').style.display = 'block';
-                    
+
                     // Set result image
                     const resultImg = document.getElementById('resultImage');
                     resultImg.src = result.generatedImage;
@@ -841,11 +863,11 @@
                 document.getElementById('fileInput').value = '';
                 document.getElementById('resultsSection').style.display = 'none';
                 document.getElementById('loadingSection').style.display = 'none';
-                
+
                 // Reset selections
                 document.querySelectorAll('.scene-option').forEach(opt => opt.classList.remove('selected'));
                 document.querySelectorAll('.gender-option').forEach(opt => opt.classList.remove('selected'));
-                
+
                 this.updateGenerateButton();
             }
         }
@@ -862,4 +884,5 @@
         }
     </script>
 </body>
+
 </html>
