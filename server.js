@@ -16,13 +16,28 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
-app.use("/outputs", express.static("outputs"));
 
+// Use /tmp directory for serverless environments, otherwise use local directories
+const UPLOADS_DIR = process.env.NODE_ENV === 'production' ? '/tmp/uploads' : 'uploads';
+const OUTPUTS_DIR = process.env.NODE_ENV === 'production' ? '/tmp/outputs' : 'outputs';
+
+// Create directories with error handling
 ["uploads", "outputs"].forEach((dir) => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  const fullPath = process.env.NODE_ENV === 'production' ? `/tmp/${dir}` : dir;
+  try {
+    if (!fs.existsSync(fullPath)) {
+      fs.mkdirSync(fullPath, { recursive: true });
+      console.log(`✅ Created directory: ${fullPath}`);
+    }
+  } catch (error) {
+    console.warn(`⚠️ Could not create directory ${fullPath}:`, error.message);
+  }
 });
+
+// Serve static files from the appropriate directories
+app.use("/uploads", express.static(UPLOADS_DIR));
+app.use("/outputs", express.static(OUTPUTS_DIR));
+app.use(express.static("public"));
 
 // Routes
 const indexRoute = require("./routes/dashboard");
@@ -31,11 +46,13 @@ app.use("/index", indexRoute);
 const dashboardRoute = require("./routes/dashboard");
 app.use("/", dashboardRoute);
 
-
 // Multer for file uploads
 const upload = multer({
   storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "uploads/"),
+    destination: (req, file, cb) => {
+      const dest = process.env.NODE_ENV === 'production' ? '/tmp/uploads' : 'uploads';
+      cb(null, dest);
+    },
     filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
   }),
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -139,7 +156,10 @@ async function generateImageWithGoogleAI(promptText, imagePath = null) {
         // Save the generated image
         const imageData = part.inlineData.data;
         const buffer = Buffer.from(imageData, "base64");
-        generatedImagePath = `outputs/${Date.now()}-generated.png`;
+        const filename = `${Date.now()}-generated.png`;
+        generatedImagePath = process.env.NODE_ENV === 'production' 
+          ? `/tmp/outputs/${filename}`
+          : `outputs/${filename}`;
         fs.writeFileSync(generatedImagePath, buffer);
         console.log(`✅ Image saved: ${generatedImagePath}`);
         break;
@@ -150,7 +170,10 @@ async function generateImageWithGoogleAI(promptText, imagePath = null) {
       throw new Error("No image data returned from model");
     }
 
-    return generatedImagePath;
+    // Return the path that matches the static serving route
+    return process.env.NODE_ENV === 'production' 
+      ? `/tmp/outputs/${path.basename(generatedImagePath)}`
+      : generatedImagePath;
   } catch (err) {
     console.error("❌ Image generation failed:", err.response?.data || err.message);
     throw new Error(err.message || "Image generation failed");
@@ -166,6 +189,7 @@ app.get("/api", (req, res) => {
     status: "running",
     scenes: Object.keys(SCENES),
     endpoint: "POST /api/upload",
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
@@ -203,11 +227,20 @@ app.post("/api/upload", upload.single("productImage"), async (req, res) => {
     // Use local file path instead of URL for the Google AI SDK
     const generatedPath = await generateImageWithGoogleAI(prompt, req.file.path);
 
+    // Return URLs that match the static serving routes
+    const originalImageUrl = process.env.NODE_ENV === 'production' 
+      ? `/uploads/${path.basename(req.file.path)}`
+      : `/uploads/${req.file.filename}`;
+    
+    const generatedImageUrl = process.env.NODE_ENV === 'production'
+      ? `/outputs/${path.basename(generatedPath)}`
+      : `/${generatedPath}`;
+
     res.json({
       success: true,
       message: "Image generated successfully",
-      originalImage: `/uploads/${req.file.filename}`,
-      generatedImage: `/${generatedPath}`,
+      originalImage: originalImageUrl,
+      generatedImage: generatedImageUrl,
       model: "gemini-2.5-flash-image",
       sceneType,
       gender,
@@ -215,7 +248,13 @@ app.post("/api/upload", upload.single("productImage"), async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Upload error:", error.message);
-    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+    if (req.file && fs.existsSync(req.file.path)) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (unlinkError) {
+        console.warn("Could not delete temporary file:", unlinkError.message);
+      }
+    }
     res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -223,7 +262,8 @@ app.post("/api/upload", upload.single("productImage"), async (req, res) => {
 // ===============================
 // 🚀 START SERVER
 // ===============================
-// app.listen(PORT, () => {
-//   console.log(`\n🚀 Server running at http://localhost:${PORT}`);
-//   console.log("✅ Ready to generate with Google AI Gemini 2.5 Flash Image");
-// });
+app.listen(PORT, () => {
+  console.log(`\n🚀 Server running at http://localhost:${PORT}`);
+  console.log("✅ Ready to generate with Google AI Gemini 2.5 Flash Image");
+  console.log(`📁 Using directories: ${process.env.NODE_ENV === 'production' ? '/tmp' : 'local'}`);
+});
