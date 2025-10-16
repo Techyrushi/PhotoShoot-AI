@@ -36,32 +36,40 @@ const upload = multer({
 });
 
 // ===============================
-// 🎨 SCENE PROMPTS
+// 🎨 SCENE PROMPTS WITH GENDER SUPPORT
 // ===============================
 const SCENES = {
   studio: {
-    description:
-      "Product in a clean white studio background, soft lighting, professional e-commerce photo.",
-    prompt:
-      "professional product photography, clean white studio background, soft lighting, sharp focus, high detail, e-commerce style",
+    description: "Product in a clean white studio background, soft lighting, professional e-commerce photo.",
+    prompts: {
+      men: "professional product photography, clean white studio background, soft lighting, sharp focus, high detail, e-commerce style, male model wearing the product, confident pose, commercial photography, high resolution, professional lighting setup",
+      women: "professional product photography, clean white studio background, soft lighting, sharp focus, high detail, e-commerce style, female model wearing the product, elegant pose, commercial photography, high resolution, professional lighting setup",
+      kids: "professional product photography, clean white studio background, soft lighting, sharp focus, high detail, e-commerce style, child model wearing the product, playful pose, commercial photography, high resolution, professional lighting setup"
+    }
   },
   lifestyle: {
-    description:
-      "Product being used by people in a natural indoor home setting with warm light.",
-    prompt:
-      "lifestyle product photography, natural indoor home setting, warm lighting, people using the product, cozy atmosphere, realistic",
+    description: "Product being used by people in a natural indoor home setting with warm light.",
+    prompts: {
+      men: "lifestyle product photography, natural indoor home setting, warm lighting, male model using the product, cozy atmosphere, realistic, candid moment, home environment, natural light, authentic lifestyle, high quality",
+      women: "lifestyle product photography, natural indoor home setting, warm lighting, female model using the product, cozy atmosphere, realistic, candid moment, home environment, natural light, authentic lifestyle, high quality",
+      kids: "lifestyle product photography, natural indoor home setting, warm lighting, child model using the product, cozy atmosphere, realistic, playful moment, home environment, natural light, authentic lifestyle, high quality"
+    }
   },
   outdoor: {
-    description:
-      "Product in a bright outdoor park or travel setting, with natural daylight and greenery.",
-    prompt:
-      "outdoor product photography, bright natural daylight, park setting, greenery, travel vibe, natural background",
+    description: "Product in a bright outdoor park or travel setting, with natural daylight and greenery.",
+    prompts: {
+      men: "outdoor product photography, bright natural daylight, park setting, greenery, male model wearing the product, travel vibe, natural background, outdoor lifestyle, adventure feel, high resolution, professional outdoor photography",
+      women: "outdoor product photography, bright natural daylight, park setting, greenery, female model wearing the product, travel vibe, natural background, outdoor lifestyle, adventure feel, high resolution, professional outdoor photography",
+      kids: "outdoor product photography, bright natural daylight, park setting, greenery, child model wearing the product, travel vibe, natural background, outdoor lifestyle, playful adventure, high resolution, professional outdoor photography"
+    }
   },
   creative: {
-    description:
-      "Product in an artistic, bold, colorful, creative advertising style composition.",
-    prompt:
-      "creative advertising photography, artistic composition, bold colors, dramatic lighting, innovative, eye-catching, professional product shot",
+    description: "Product in an artistic, bold, colorful, creative advertising style composition.",
+    prompts: {
+      men: "creative advertising photography, artistic composition, bold colors, dramatic lighting, male model wearing the product, innovative, eye-catching, professional product shot, fashion photography, high-end commercial, creative styling",
+      women: "creative advertising photography, artistic composition, bold colors, dramatic lighting, female model wearing the product, innovative, eye-catching, professional product shot, fashion photography, high-end commercial, creative styling",
+      kids: "creative advertising photography, artistic composition, bold colors, dramatic lighting, child model wearing the product, innovative, eye-catching, professional product shot, fashion photography, high-end commercial, creative styling"
+    }
   },
 };
 
@@ -160,18 +168,30 @@ app.get("/api/scenes", (req, res) => {
   );
 });
 
+app.get("/api/genders", (req, res) => {
+  res.json([
+    { id: "men", name: "Men", description: "Male models" },
+    { id: "women", name: "Women", description: "Female models" },
+    { id: "kids", name: "Kids", description: "Child models" }
+  ]);
+});
+
 app.post("/api/upload", upload.single("productImage"), async (req, res) => {
   try {
     if (!req.file)
       return res.status(400).json({ success: false, error: "No image uploaded" });
 
     const sceneType = req.body.sceneType || "studio";
+    const gender = req.body.gender || "men";
     const scene = SCENES[sceneType] || SCENES.studio;
 
-    console.log(`🎨 Generating ${sceneType} image with Gemini...`);
+    // Get the appropriate prompt based on scene and gender
+    const prompt = scene.prompts?.[gender] || scene.prompts?.men || "professional product photography";
+
+    console.log(`🎨 Generating ${sceneType} image with ${gender} model using Gemini...`);
 
     // Use local file path instead of URL for the Google AI SDK
-    const generatedPath = await generateImageWithGoogleAI(scene.prompt, req.file.path);
+    const generatedPath = await generateImageWithGoogleAI(prompt, req.file.path);
 
     res.json({
       success: true,
@@ -180,6 +200,8 @@ app.post("/api/upload", upload.single("productImage"), async (req, res) => {
       generatedImage: `/${generatedPath}`,
       model: "gemini-2.5-flash-image",
       sceneType,
+      gender,
+      prompt: prompt
     });
   } catch (error) {
     console.error("❌ Upload error:", error.message);
