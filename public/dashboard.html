@@ -1,0 +1,888 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/logos.png" type="image/png">
+    <title>Dashboard - PhotoShoot AI Studio - Transform Your Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: #111111;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #333333;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5));
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover .logo-img {
+            transform: scale(1.05);
+        }
+
+        .back-btn {
+            background: #333333;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #a855f7;
+            color: #ffffff;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: #111111;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333333;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #333333;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: #a855f7;
+            background: #1a1a1a;
+        }
+
+        .upload-area.dragover {
+            border-color: #a855f7;
+            background: #1a1a1a;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #666666;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtext {
+            font-size: 0.9rem;
+            color: #999999;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .preview-container {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Settings Section */
+        .settings-section {
+            background: #111111;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333333;
+        }
+
+        .setting-group {
+            margin-bottom: 2rem;
+        }
+
+        .setting-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .scene-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .scene-option {
+            border: 2px solid #333333;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .scene-option:hover {
+            border-color: #a855f7;
+            background: #1a1a1a;
+        }
+
+        .scene-option.selected {
+            border-color: #a855f7;
+            background: #1a1a1a;
+        }
+
+        .scene-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .scene-name {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+
+        .scene-desc {
+            font-size: 0.85rem;
+            color: #999999;
+        }
+
+        .gender-options {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .gender-option {
+            flex: 1;
+            border: 2px solid #333333;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .gender-option:hover {
+            border-color: #a855f7;
+            background: #1a1a1a;
+        }
+
+        .gender-option.selected {
+            border-color: #a855f7;
+            background: #1a1a1a;
+        }
+
+        .gender-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .gender-name {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Generate Button */
+        .generate-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Loading Section */
+        .loading-section {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background: #111111;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333333;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #333333;
+            border-top: 6px solid #a855f7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtext {
+            color: #999999;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            background: #111111;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333333;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .new-generation-btn {
+            background: #333333;
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-generation-btn:hover {
+            background: #a855f7;
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            display: block;
+        }
+
+        .result-actions {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .download-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #2d1b1b;
+            color: #f87171;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #7f1d1d;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scene-options {
+                grid-template-columns: 1fr;
+            }
+
+            .gender-options {
+                flex-direction: column;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .header-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="images/logos.png" alt="PhotoShoot AI Studio Logo" class="logo-img">
+                <span class="logo-text">PhotoShoot AI Studio</span>
+            </div>
+            <a href="/index" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+    </header>
+
+ 
+    <div class="container">
+       
+        <div class="error-message" id="errorMessage"></div>
+
+        
+        <div class="dashboard-grid">
+      
+            <div class="upload-section">
+                <h2 class="section-title">
+                    <i class="fas fa-upload"></i>
+                    Upload Product Image
+                </h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">Click to upload or drag & drop</div>
+                    <div class="upload-subtext">PNG, JPG, WEBP up to 10MB</div>
+                    <input type="file" class="file-input" id="fileInput" accept="image/*">
+                </div>
+                <div class="preview-container" id="previewContainer">
+                    <img class="preview-image" id="previewImage" alt="Preview">
+                </div>
+            </div>
+
+       
+            <div class="settings-section">
+                <h2 class="section-title">
+                    <i class="fas fa-cog"></i>
+                    Photoshoot Settings
+                </h2>
+
+            
+                <div class="setting-group">
+                    <label class="setting-label">Scene Type</label>
+                    <div class="scene-options" id="sceneOptions">
+                        <div class="scene-option" data-scene="studio">
+                            <div class="scene-icon">🏢</div>
+                            <div class="scene-name">Studio</div>
+                            <div class="scene-desc">Clean, professional</div>
+                        </div>
+                        <div class="scene-option" data-scene="lifestyle">
+                            <div class="scene-icon">👥</div>
+                            <div class="scene-name">Lifestyle</div>
+                            <div class="scene-desc">Natural, home setting</div>
+                        </div>
+                        <div class="scene-option" data-scene="outdoor">
+                            <div class="scene-icon">🌳</div>
+                            <div class="scene-name">Outdoor</div>
+                            <div class="scene-desc">Park, natural light</div>
+                        </div>
+                        <div class="scene-option" data-scene="creative">
+                            <div class="scene-icon">🎨</div>
+                            <div class="scene-name">Creative</div>
+                            <div class="scene-desc">Artistic, bold</div>
+                        </div>
+                    </div>
+                </div>
+
+             
+                <div class="setting-group">
+                    <label class="setting-label">Model Gender</label>
+                    <div class="gender-options" id="genderOptions">
+                        <div class="gender-option" data-gender="men">
+                            <div class="gender-icon">👨</div>
+                            <div class="gender-name">Men</div>
+                        </div>
+                        <div class="gender-option" data-gender="women">
+                            <div class="gender-icon">👩</div>
+                            <div class="gender-name">Women</div>
+                        </div>
+                        <div class="gender-option" data-gender="kids">
+                            <div class="gender-icon">👶</div>
+                            <div class="gender-name">Kids</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+   
+        <div class="generate-section">
+            <button class="generate-btn" id="generateBtn" disabled>
+                <i class="fas fa-magic"></i>
+                Generate Photoshoot
+            </button>
+        </div>
+
+   
+        <div class="loading-section" id="loadingSection">
+            <div class="spinner"></div>
+            <div class="loading-text">Generating your photoshoot...</div>
+            <div class="loading-subtext">This may take a few moments. Please don't close this page.</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+  
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2 class="results-title">Your Generated Photoshoot</h2>
+                <button class="new-generation-btn" onclick="resetDashboard()">
+                    <i class="fas fa-plus"></i>
+                    Generate Another
+                </button>
+            </div>
+            <img class="result-image" id="resultImage" alt="Generated Photoshoot">
+            <div class="result-actions">
+                <button class="download-btn" id="downloadBtn">
+                    <i class="fas fa-download"></i>
+                    Download Image
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class PhotoshootDashboard {
+            constructor() {
+                this.selectedScene = null;
+                this.selectedGender = null;
+                this.uploadedFile = null;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadScenes();
+            }
+
+            bindEvents() {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+                const generateBtn = document.getElementById('generateBtn');
+
+                // File upload events - FIXED: Use direct click handler
+                uploadArea.addEventListener('click', (e) => {
+                    // Only trigger file input if not clicking on the file input itself
+                    if (e.target !== fileInput) {
+                        fileInput.click();
+                    }
+                });
+
+                // FIXED: Use 'input' event instead of 'change' for better compatibility
+                fileInput.addEventListener('input', (e) => this.handleFileSelect(e));
+
+                // Drag and drop events
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    this.handleFileDrop(e);
+                });
+
+                // Scene selection
+                document.querySelectorAll('.scene-option').forEach(option => {
+                    option.addEventListener('click', () => this.selectScene(option));
+                });
+
+                // Gender selection
+                document.querySelectorAll('.gender-option').forEach(option => {
+                    option.addEventListener('click', () => this.selectGender(option));
+                });
+
+                // Generate button
+                generateBtn.addEventListener('click', () => this.generatePhotoshoot());
+
+                // Download button
+                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadImage());
+            }
+
+            async loadScenes() {
+                try {
+                    const response = await fetch('/api/scenes');
+                    if (!response.ok) throw new Error('Failed to load scenes');
+                    const scenes = await response.json();
+                    console.log('Scenes loaded:', scenes);
+                } catch (error) {
+                    console.error('Error loading scenes:', error);
+                    this.showError('Failed to load scene options. Please refresh the page.');
+                }
+            }
+
+            selectScene(option) {
+                // Remove previous selection
+                document.querySelectorAll('.scene-option').forEach(opt => opt.classList.remove('selected'));
+
+                // Add selection to clicked option
+                option.classList.add('selected');
+                this.selectedScene = option.dataset.scene;
+
+                this.updateGenerateButton();
+            }
+
+            selectGender(option) {
+                // Remove previous selection
+                document.querySelectorAll('.gender-option').forEach(opt => opt.classList.remove('selected'));
+
+                // Add selection to clicked option
+                option.classList.add('selected');
+                this.selectedGender = option.dataset.gender;
+
+                this.updateGenerateButton();
+            }
+
+            handleFileSelect(event) {
+                const file = event.target.files?.[0];
+
+                if (file) {
+                    this.processFile(file);
+                }
+            }
+
+            handleFileDrop(event) {
+                const file = event.dataTransfer?.files?.[0];
+
+                if (file) {
+                    // Reset file input to allow selecting the same file again
+                    document.getElementById('fileInput').value = '';
+                    this.processFile(file);
+                }
+            }
+
+            processFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    this.showError('Please select a valid image file (JPEG, PNG, WEBP)');
+                    return;
+                }
+
+                if (file.size > 10 * 1024 * 1024) {
+                    this.showError('File size must be less than 10MB');
+                    return;
+                }
+
+                this.uploadedFile = file;
+                this.displayPreview(file);
+                this.updateGenerateButton();
+            }
+
+            displayPreview(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('previewImage');
+                    const container = document.getElementById('previewContainer');
+
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            updateGenerateButton() {
+                const generateBtn = document.getElementById('generateBtn');
+                const canGenerate = this.uploadedFile && this.selectedScene && this.selectedGender;
+                generateBtn.disabled = !canGenerate;
+            }
+
+            showError(message) {
+                const errorEl = document.getElementById('errorMessage');
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+
+                setTimeout(() => {
+                    errorEl.style.display = 'none';
+                }, 5000);
+            }
+
+            async generatePhotoshoot() {
+                if (!this.uploadedFile || !this.selectedScene || !this.selectedGender) {
+                    this.showError('Please upload an image and select both scene type and model gender');
+                    return;
+                }
+
+                // Show loading
+                document.getElementById('loadingSection').style.display = 'block';
+                document.getElementById('resultsSection').style.display = 'none';
+                this.hideError();
+
+                // Simulate progress
+                this.simulateProgress();
+
+                try {
+                    const formData = new FormData();
+                    formData.append('productImage', this.uploadedFile);
+                    formData.append('sceneType', this.selectedScene);
+                    formData.append('gender', this.selectedGender);
+
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.displayResults(result);
+                    } else {
+                        throw new Error(result.error || 'Generation failed');
+                    }
+
+                } catch (error) {
+                    console.error('Generation error:', error);
+                    this.showError('Failed to generate photoshoot: ' + error.message);
+                    this.hideLoading();
+                }
+            }
+
+            simulateProgress() {
+                const progressFill = document.getElementById('progressFill');
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    progressFill.style.width = progress + '%';
+                }, 200);
+
+                // Store interval ID to clear it later
+                this.progressInterval = interval;
+            }
+
+            displayResults(result) {
+                // Clear progress interval
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                }
+
+                // Complete progress bar
+                document.getElementById('progressFill').style.width = '100%';
+
+                // Hide loading, show results
+                setTimeout(() => {
+                    document.getElementById('loadingSection').style.display = 'none';
+                    document.getElementById('resultsSection').style.display = 'block';
+
+                    // Set result image
+                    const resultImg = document.getElementById('resultImage');
+                    resultImg.src = result.generatedImage;
+                    resultImg.onerror = () => {
+                        resultImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjI1MCIgeT0iMjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNkI3MjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiPkltYWdlIG5vdCBmb3VuZDwvdGV4dD4KPC9zdmc+';
+                    };
+
+                    // Store download URL
+                    this.downloadUrl = result.generatedImage;
+                }, 1000);
+            }
+
+            downloadImage() {
+                if (this.downloadUrl) {
+                    const a = document.createElement('a');
+                    a.href = this.downloadUrl;
+                    a.download = `photoshoot-${this.selectedScene}-${this.selectedGender}-${Date.now()}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            }
+
+            hideLoading() {
+                document.getElementById('loadingSection').style.display = 'none';
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                }
+            }
+
+            hideError() {
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+
+            reset() {
+                this.selectedScene = null;
+                this.selectedGender = null;
+                this.uploadedFile = null;
+                this.downloadUrl = null;
+
+                // Reset UI
+                document.getElementById('previewContainer').style.display = 'none';
+                document.getElementById('fileInput').value = '';
+                document.getElementById('resultsSection').style.display = 'none';
+                document.getElementById('loadingSection').style.display = 'none';
+
+                // Reset selections
+                document.querySelectorAll('.scene-option').forEach(opt => opt.classList.remove('selected'));
+                document.querySelectorAll('.gender-option').forEach(opt => opt.classList.remove('selected'));
+
+                this.updateGenerateButton();
+            }
+        }
+
+        // Initialize dashboard
+        let dashboard;
+        document.addEventListener('DOMContentLoaded', () => {
+            dashboard = new PhotoshootDashboard();
+        });
+
+        // Global function for reset
+        function resetDashboard() {
+            dashboard.reset();
+        }
+    </script>
+</body>
+
+</html> -->
