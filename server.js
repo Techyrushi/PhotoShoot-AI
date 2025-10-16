@@ -37,7 +37,7 @@ const OUTPUTS_DIR = process.env.NODE_ENV === 'production' ? '/tmp/outputs' : 'ou
 // Serve static files from the appropriate directories
 app.use("/uploads", express.static(UPLOADS_DIR));
 app.use("/outputs", express.static(OUTPUTS_DIR));
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 const indexRoute = require("./routes/dashboard");
