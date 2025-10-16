@@ -223,7 +223,7 @@ app.post("/api/upload", upload.single("productImage"), async (req, res) => {
 // ===============================
 // 🚀 START SERVER
 // ===============================
-app.listen(PORT, () => {
-  console.log(`\n🚀 Server running at http://localhost:${PORT}`);
-  console.log("✅ Ready to generate with Google AI Gemini 2.5 Flash Image");
-});
+// app.listen(PORT, () => {
+//   console.log(`\n🚀 Server running at http://localhost:${PORT}`);
+//   console.log("✅ Ready to generate with Google AI Gemini 2.5 Flash Image");
+// });
