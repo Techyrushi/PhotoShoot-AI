@@ -9,8 +9,8 @@ router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-// router.get("/dashboard", (req, res) => {
-//   res.sendFile(path.join(__dirname, "../public/dashboard.html"));
-// });
+router.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/dashboard.html"));
+});
 
 module.exports = router;
